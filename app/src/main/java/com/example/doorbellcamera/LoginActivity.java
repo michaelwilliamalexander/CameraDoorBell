@@ -2,6 +2,7 @@ package com.example.doorbellcamera;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -40,6 +41,10 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (passInp.isEmpty()) {
                     Pass.setError("Please Enter Your Password");
                     Pass.requestFocus();
+                }else{
+                    Intent mainActivity = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(mainActivity);
+                    finish();
                 }
             }
         });
