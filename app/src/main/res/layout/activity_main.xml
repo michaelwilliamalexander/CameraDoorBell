@@ -20,6 +20,8 @@
         app:titleTextColor="@color/half_black"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+    </com.google.android.material.appbar.AppBarLayout>
+
     <include layout="@layout/content_activity_main" />
 
 </RelativeLayout>

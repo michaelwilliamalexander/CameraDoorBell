@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1032033885646",
+    "firebase_url": "https://iot-santuy.firebaseio.com",
+    "project_id": "iot-santuy",
+    "storage_bucket": "iot-santuy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032033885646:android:0f473e0158c504da379f9f",
+        "android_client_info": {
+          "package_name": "com.example.doorbellcamera"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032033885646-gsnq5mk7hlj5se83qiao4h2eauvi7oqm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.doorbellcamera",
+            "certificate_hash": "a7ecb5df5ee798fc38899232dabf66ef9269374d"
+          }
+        },
+        {
+          "client_id": "1032033885646-1pdfpij7o31siofelhjb230q3v3h039g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDf6XZskqhxEcT5Gr5IbpjzbLjZfaZJVaw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1032033885646-1pdfpij7o31siofelhjb230q3v3h039g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

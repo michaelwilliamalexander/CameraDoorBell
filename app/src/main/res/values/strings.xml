@@ -5,4 +5,5 @@
     <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
     <string name="camera_desc">Camera Desc</string>
     <string name="tanggal">Tanggal</string>
+    <string name="logout">Logout</string>
 </resources>
