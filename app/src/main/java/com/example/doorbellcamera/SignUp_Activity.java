@@ -7,12 +7,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
 public class SignUp_Activity extends AppCompatActivity {
-    public EditText emailSignup, passSignup, passCheck;
-    public Button button;
+    private EditText emailSignup, passSignup, passCheck;
+    private Button button;
+    private FirebaseAuth mAuth;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -23,7 +30,7 @@ public class SignUp_Activity extends AppCompatActivity {
         passSignup = findViewById(R.id.passSign);
         passCheck = findViewById(R.id.passCheck);
         button = findViewById(R.id.signupButton);
-
+        mAuth =  FirebaseAuth.getInstance();
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,10 +58,29 @@ public class SignUp_Activity extends AppCompatActivity {
                     passSignup.getText().clear();
                     passCheck.getText().clear();
                 } else if (!(pass.isEmpty() && email.isEmpty()) && pass.equals(repass)) {
-                    Toast.makeText(SignUp_Activity.this, "Please check your email for verification", Toast.LENGTH_SHORT).show();
-                    Intent Login = new Intent(SignUp_Activity.this, LoginActivity.class);
-                    finish();
-                    startActivity(Login);
+                    mAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(SignUp_Activity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(SignUp_Activity.this, "Please check your email for verification", Toast.LENGTH_SHORT).show();
+                                            Intent Login = new Intent(SignUp_Activity.this, LoginActivity.class);
+                                            finish();
+                                            startActivity(Login);
+                                        } else {
+                                            Toast.makeText(SignUp_Activity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+                                });
+
+                            } else
+                                Toast.makeText(SignUp_Activity.this, "Sign Up Failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
 
             }
