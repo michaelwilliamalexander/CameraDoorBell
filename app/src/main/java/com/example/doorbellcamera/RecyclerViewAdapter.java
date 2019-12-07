@@ -1,14 +1,21 @@
 package com.example.doorbellcamera;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
@@ -29,8 +36,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.detailPhoto.setText(photoList.get(position).getPath());
-        holder.timestampPhoto.setText(String.valueOf(position+1));
+       String image = photoList.get(position).getPath().replace("data:image/jpeg;base64,","");
+       byte[] decode = Base64.decode(image.getBytes(),Base64.DEFAULT);
+       Bitmap bitmap = BitmapFactory.decodeByteArray(decode,0,decode.length);
+       holder.photo.setImageBitmap(bitmap);
     }
 
     @Override
@@ -40,11 +49,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView detailPhoto;
-        TextView timestampPhoto;
+        ImageView photo;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             detailPhoto = itemView.findViewById(R.id.cameraDesc);
-            timestampPhoto = itemView.findViewById(R.id.cameraDate);
+            photo= itemView.findViewById(R.id.photo);
         }
     }
 }
