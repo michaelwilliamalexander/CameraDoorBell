@@ -10,24 +10,27 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    private List<Photo> photoList = new ArrayList<>();
+    private ArrayList<Photo> photoList;
     private Context mContext;
+
+    public RecyclerViewAdapter(Context context, ArrayList<Photo> photos){
+        this.mContext = context;
+        this.photoList = photos;
+    }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_row, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.card_row, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Photo photo = photoList.get(position);
-        holder.detailPhoto.setText(photo.getPhoto());
-        holder.timestampPhoto.setText(photo.getPhoto());
+        holder.detailPhoto.setText(photoList.get(position).getPath());
+        holder.timestampPhoto.setText(String.valueOf(position+1));
     }
 
     @Override
