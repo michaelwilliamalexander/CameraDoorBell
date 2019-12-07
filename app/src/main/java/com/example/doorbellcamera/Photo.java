@@ -1,31 +1,22 @@
 package com.example.doorbellcamera;
 
 public class Photo  {
-    private String photo;
-    private String timestamp;
+    private String path;
 
     public Photo(){
         //empty constructor needed
     }
 
-    public Photo(String photo, String timestamp){
-        this.photo = photo;
-        this.timestamp = timestamp;
+    public Photo(String path){
+        this.path = path;
     }
 
-    public String getPhoto() {
-        return photo;
+    public String getPath() {
+        return path;
     }
 
-    public void setPhoto(String photo) {
-        this.photo = photo;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
 }
