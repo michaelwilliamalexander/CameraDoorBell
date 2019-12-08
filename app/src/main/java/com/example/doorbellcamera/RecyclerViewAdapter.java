@@ -40,6 +40,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
        byte[] decode = Base64.decode(image.getBytes(),Base64.DEFAULT);
        Bitmap bitmap = BitmapFactory.decodeByteArray(decode,0,decode.length);
        holder.photo.setImageBitmap(bitmap);
+       long countTime = Long.parseLong(photoList.get(position).getTime());
+       String date = new java.text.SimpleDateFormat("dd/MM/YYYY HH:mm:ss").format(new java.util.Date(countTime));
+       System.out.println("Tanggalnya: " + date);
+       holder.detailPhoto.setText(date);
     }
 
     @Override

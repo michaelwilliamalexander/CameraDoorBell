@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 photos.clear();
                 for (DataSnapshot dataSnapshot1: dataSnapshot.getChildren()){
                     Photo photo = dataSnapshot1.getValue(Photo.class);
+                    photo.setTime(dataSnapshot1.getKey());
                     photos.add(photo);
                 }
                 adapter = new RecyclerViewAdapter(MainActivity.this,photos);
