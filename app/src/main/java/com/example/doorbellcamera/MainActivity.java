@@ -14,12 +14,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.example.doorbellcamera.Notification.Token;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
@@ -30,12 +36,15 @@ public class MainActivity extends AppCompatActivity {
     private StaggeredGridLayoutManager gridLayoutManager;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
+    private String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
 
         recyclerView = findViewById(R.id.recyclerView);
         gridLayoutManager = new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
@@ -62,8 +71,22 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,"Ops....Something Wrong",Toast.LENGTH_SHORT).show();
             }
         });
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        token = task.getResult().getToken();
+                        updateToken(token);
+                    }
+                });
     }
 
+    private void updateToken(String refresh){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token mToken =  new Token(token);
+        ref.child(mAuth.getUid()).setValue(mToken);
+        System.out.println(mToken.getToken());
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();

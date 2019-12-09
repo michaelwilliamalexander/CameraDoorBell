@@ -12,7 +12,6 @@
         <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -20,7 +19,13 @@
             android:theme="@style/AppTheme.WhiteBar"></activity>
         <activity android:name=".SignUp_Activity"></activity>
         <activity android:name=".LoginActivity"></activity>
-
+    <service android:name=".Notification.FirebaseMessage"
+        android:enabled="true"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+        </intent-filter>
+    </service>
     </application>
 
 </manifest>
