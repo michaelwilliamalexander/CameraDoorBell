@@ -1,4 +1,4 @@
-package com.example.doorbellcamera;
+package com.example.doorbellcamera.Notification;
 
 import android.app.Service;
 import android.content.Intent;
