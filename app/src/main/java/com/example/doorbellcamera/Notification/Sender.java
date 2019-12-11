@@ -1,19 +1,19 @@
 package com.example.doorbellcamera.Notification;
 
 public class Sender {
-    private String data;
+    private Data data;
     private String to;
 
-    public Sender(String data, String to) {
+    public Sender(Data data, String to) {
         this.data = data;
         this.to = to;
     }
 
-    public String getData() {
+    public Data getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(Data data) {
         this.data = data;
     }
 

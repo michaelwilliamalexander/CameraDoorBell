@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1032033885646-a8vslu6lgisdapcp2p7m86fredfocppq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.doorbellcamera",
+            "certificate_hash": "0e89623641ba8a802e8a27569be497df4fd05466"
+          }
+        },
+        {
           "client_id": "1032033885646-gsnq5mk7hlj5se83qiao4h2eauvi7oqm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
