@@ -59,5 +59,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             detailPhoto = itemView.findViewById(R.id.cameraDesc);
             photo= itemView.findViewById(R.id.photo);
         }
+
     }
 }

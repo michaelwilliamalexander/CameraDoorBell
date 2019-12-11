@@ -1,16 +1,19 @@
 package com.example.doorbellcamera;
 
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -25,7 +28,10 @@ import com.example.doorbellcamera.Notification.Data;
 import com.example.doorbellcamera.Notification.Sender;
 import com.example.doorbellcamera.Notification.Token;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -86,18 +92,32 @@ public class MainActivity extends AppCompatActivity {
         sendNotification(mUid,nama,message);
         mReferences.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                 photos.clear();
                 for (DataSnapshot dataSnapshot1: dataSnapshot.getChildren()){
+                    final DataSnapshot snapshot = dataSnapshot1;
                     Photo photo = dataSnapshot1.getValue(Photo.class);
                     photo.setTime(dataSnapshot1.getKey());
                     photos.add(photo);
-
-
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+                        @Override
+                        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                            return false;
+                        }
+                        @Override
+                        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                            if (direction == ItemTouchHelper.LEFT) {
+                                RecyclerViewAdapter.ViewHolder noteViewHolder = (RecyclerViewAdapter.ViewHolder) viewHolder;
+                                handleDeleteItem(snapshot);
+                            }
+                        }
+                    });
+                    itemTouchHelper.attachToRecyclerView(recyclerView);
                 }
                 updateToken(FirebaseInstanceId.getInstance().getToken());
                 adapter = new RecyclerViewAdapter(MainActivity.this,photos);
                 recyclerView.setAdapter(adapter);
+
             }
 
             @Override
@@ -105,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,"Ops....Something Wrong",Toast.LENGTH_SHORT).show();
             }
         });
+
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
@@ -113,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                         updateToken(token);
                     }
                 });
+
     }
 
     private void updateToken(String refresh){
@@ -127,7 +149,23 @@ public class MainActivity extends AppCompatActivity {
         menuInflater.inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
+    public void handleDeleteItem(DataSnapshot snapshot) {
+        final DatabaseReference documentReference = snapshot.getRef();
+        final Photo photo = snapshot.getValue(Photo.class);
 
+        documentReference.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+            }
+        });
+        Snackbar.make(recyclerView, "Item Deleted", Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                documentReference.setValue(photo);
+            }
+        }).show();
+    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_logout) {
@@ -155,18 +193,18 @@ public class MainActivity extends AppCompatActivity {
                     Sender sender = new Sender(data, token.getToken());
                     System.out.println("1");
                     //fcm json
-                    apiService.sendNotification(sender)
-                            .enqueue((new Callback<Response>() {
-                                @Override
-                                public void onResponse(Call<Response> call, Response<Response> response) {
-
-                                }
-
-                                @Override
-                                public void onFailure(Call<Response> call, Throwable t) {
-
-                                }
-                            }));
+//                    apiService.sendNotification(sender)
+//                            .enqueue((new Callback<Response>() {
+//                                @Override
+//                                public void onResponse(Call<Response> call, Response<Response> response) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onFailure(Call<Response> call, Throwable t) {
+//
+//                                }
+//                            }));
                 }
             }
 
@@ -175,5 +213,6 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("coeg");
             }
         });
+
     }
 }
