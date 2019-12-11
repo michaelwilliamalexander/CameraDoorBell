@@ -103,6 +103,16 @@ public class MainActivity extends AppCompatActivity {
             logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(logout);
             finish();
+        }else if(item.getItemId() == R.id.action_token){
+            Intent getToken = new Intent(MainActivity.this, getToken.class);
+            startActivity(getToken);
+
+        }else if(item.getItemId() == R.id.action_token){
+            Intent refresh = new Intent(MainActivity.this, MainActivity.class);
+            refresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            refresh.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(refresh);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }

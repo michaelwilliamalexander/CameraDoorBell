@@ -3,9 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.notes.MainActivity">
     <item
-        android:id="@+id/action_profile"
+        android:id="@+id/action_refersh"
         android:orderInCategory="100"
-        android:title="Profile"
+        android:title="Refresh"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_token"
+        android:orderInCategory="100"
+        android:title="Token"
         app:showAsAction="never"
         />
     <item
