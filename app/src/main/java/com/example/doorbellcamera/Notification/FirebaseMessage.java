@@ -43,11 +43,13 @@ public class FirebaseMessage extends FirebaseMessagingService {
         String sent = remoteMessage.getData().get("sent");
         String user = remoteMessage.getData().get("user");
         FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(fUser != null){
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                sendOAndAboveNotification(remoteMessage);
-            }else{
-                sendNormalNotification(remoteMessage);
+        if(fUser != null && sent.equals(fUser.getUid())){
+            if(!user.equals(fUser.getUid())){
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                    sendOAndAboveNotification(remoteMessage);
+                }else{
+                    sendNormalNotification(remoteMessage);
+                }
             }
         }
     }
@@ -62,16 +64,16 @@ public class FirebaseMessage extends FirebaseMessagingService {
         int i = Integer.parseInt(user.replaceAll("[\\D]",""));
         Intent intent = new Intent(this, MainActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("uid",user);
-        intent.putExtras(bundle);
+        //bundle.putString("uid",user);
+        //intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,i,intent,PendingIntent.FLAG_ONE_SHOT);
         Uri defSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(Integer.parseInt(icon))
-                .setContentText("ini body")
-                .setContentTitle("michael jelek")
-                .setAutoCancel(false)
+                .setContentText(body)
+                .setContentTitle(title)
+                .setAutoCancel(true)
                 .setSound(defSoundUri)
                 .setContentIntent(pendingIntent);
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
@@ -92,9 +94,9 @@ public class FirebaseMessage extends FirebaseMessagingService {
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int i = Integer.parseInt(user.replaceAll("[\\D]", ""));
         Intent intent = new Intent(this, MainActivity.class);
-        Bundle bundle =  new Bundle();
-        bundle.putString("uid", user);
-        intent.putExtras(bundle);
+//        Bundle bundle =  new Bundle();
+////        bundle.putString("uid", user);
+////        intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
         Uri defSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

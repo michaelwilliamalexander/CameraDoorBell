@@ -2,6 +2,7 @@ package com.example.doorbellcamera;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,45 +15,75 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.doorbellcamera.Notification.APIService;
+import com.example.doorbellcamera.Notification.Client;
+import com.example.doorbellcamera.Notification.Data;
+import com.example.doorbellcamera.Notification.Sender;
 import com.example.doorbellcamera.Notification.Token;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    private FirebaseUser user;
     private DatabaseReference mReferences;
     private ArrayList<Photo> photos;
     private StaggeredGridLayoutManager gridLayoutManager;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
     private String token;
+    protected RequestQueue requestQueue;
+    APIService apiService;
+    private boolean notify = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        final String message =  "Message";
         FirebaseMessaging.getInstance().subscribeToTopic("news");
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
+        apiService = Client.getRetrofit("https://fcm.googleapis.com/").create(APIService.class);
         recyclerView = findViewById(R.id.recyclerView);
         gridLayoutManager = new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(gridLayoutManager);
 
         photos = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
+        final String mUid = mAuth.getUid();
+        final String nama = user.getDisplayName();
         mReferences = FirebaseDatabase.getInstance().getReference().child(mAuth.getUid());
+        //sendNotification(user.getUid(), "NAnada","KOntol");
+        sendNotification(mUid,nama,message);
         mReferences.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -61,7 +92,10 @@ public class MainActivity extends AppCompatActivity {
                     Photo photo = dataSnapshot1.getValue(Photo.class);
                     photo.setTime(dataSnapshot1.getKey());
                     photos.add(photo);
+
+
                 }
+                updateToken(FirebaseInstanceId.getInstance().getToken());
                 adapter = new RecyclerViewAdapter(MainActivity.this,photos);
                 recyclerView.setAdapter(adapter);
             }
@@ -105,5 +139,41 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void sendNotification(final String hisUid, final String name, final String message){
+        System.out.println("INI BAGIAN KIRIM NOTIFNYA CUY");
+        DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = allTokens.orderByKey().equalTo(hisUid);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                System.out.println("6");
+                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                    Token token = ds.getValue(Token.class);
+                    Data data = new Data(user.getUid(),R.drawable.boxtext, "meme", "michael", "sented");
+                    Sender sender = new Sender(data, token.getToken());
+                    System.out.println("1");
+                    //fcm json
+                    apiService.sendNotification(sender)
+                            .enqueue((new Callback<Response>() {
+                                @Override
+                                public void onResponse(Call<Response> call, Response<Response> response) {
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<Response> call, Throwable t) {
+
+                                }
+                            }));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("coeg");
+            }
+        });
     }
 }
