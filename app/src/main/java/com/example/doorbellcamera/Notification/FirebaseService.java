@@ -13,6 +13,6 @@ public class FirebaseService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        System.out.println(remoteMessage.getData().get("title"));
+        System.out.println(remoteMessage.getData());
     }
 }
