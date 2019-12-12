@@ -1,9 +1,7 @@
 package com.example.doorbellcamera;
 
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,17 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.doorbellcamera.Notification.APIService;
 import com.example.doorbellcamera.Notification.Client;
 import com.example.doorbellcamera.Notification.Data;
 import com.example.doorbellcamera.Notification.Sender;
 import com.example.doorbellcamera.Notification.Token;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -43,18 +37,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -88,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
         final String mUid = mAuth.getUid();
         final String nama = user.getDisplayName();
         mReferences = FirebaseDatabase.getInstance().getReference().child(mAuth.getUid());
-        //sendNotification(user.getUid(), "NAnada","KOntol");
         sendNotification(mUid,nama,message);
         mReferences.addValueEventListener(new ValueEventListener() {
             @Override
@@ -143,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
         ref.child(mAuth.getUid()).setValue(mToken);
         System.out.println(mToken.getToken());
     }
+
+    //create toolbar with menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -166,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }).show();
     }
+    //on menu toolbar selected
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_logout) {
@@ -220,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                System.out.println("coeg");
+                System.out.println("coeg Error");
             }
         });
 
