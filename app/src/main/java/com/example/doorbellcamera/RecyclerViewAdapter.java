@@ -45,8 +45,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
        byte[] decode = Base64.decode(image.getBytes(),Base64.DEFAULT);
        Bitmap bitmap = BitmapFactory.decodeByteArray(decode,0,decode.length);
        holder.photo.setImageBitmap(bitmap);
-       final long countTime = Long.parseLong(photoList.get(position).getTime());
-       String date = new java.text.SimpleDateFormat("dd/MM/YYYY HH:mm:ss").format(new java.util.Date(countTime));
+       long countTime = Long.parseLong(photoList.get(position).getTime());
+       final String date = new java.text.SimpleDateFormat("dd/MM/YYYY HH:mm:ss").format(new java.util.Date(countTime));
        System.out.println("Tanggalnya: " + date);
        holder.detailPhoto.setText(date);
 
@@ -60,8 +60,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                final Intent detailIntent = new Intent(v.getContext(), DetailPhoto.class);
                Bundle bundle = new Bundle();
                bundle.putString(KEY_IMAGE, image);
-               bundle.putString(KEY_TIMESTAMP, String.valueOf(countTime));
-
+               bundle.putString(KEY_TIMESTAMP, date);
                detailIntent.putExtras(bundle);
                v.getContext().startActivity(detailIntent);
 
