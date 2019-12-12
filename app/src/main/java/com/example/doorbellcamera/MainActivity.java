@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         photos = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
         mReferences = FirebaseDatabase.getInstance().getReference().child(mAuth.getUid());
-        //sendNotification(user.getUid(), "NAnada","KOntol");
         mReferences.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {

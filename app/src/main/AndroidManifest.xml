@@ -27,7 +27,9 @@
         <activity android:name=".getToken" />
         <activity android:name=".LoginActivity" />
 
-        <service android:name=".Notification.FirebaseService">
+        <service android:name=".Notification.FirebaseService"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
